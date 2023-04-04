@@ -1,0 +1,125 @@
+---
+version: "2.1"
+services:
+  diun:
+    image: crazymax/diun:latest
+    container_name: diun
+    network_mode: "bridge"
+    command: serve
+    environment:
+      - TZ=${TZ}
+      - LOG_LEVEL=info
+      - LOG_JSON=false
+      - DIUN_WATCH_WORKERS=20
+      - DIUN_WATCH_SCHEDULE=0 23 * * *
+      - DIUN_PROVIDERS_DOCKER=true
+      - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
+      - DIUN_PROVIDERS_DOCKER_WATCHSTOPPED=true
+      - DIUN_NOTIF_GOTIFY_ENDPOINT=${GOTIFY_ENDPOINT}
+      - DIUN_NOTIF_GOTIFY_TOKEN=${GOTIFY_TOKEN}
+      - DIUN_WATCH_FIRSTCHECKNOTIF=true
+      - DIUN_WATCH_HEALTHCHECKS_BASEURL=${HEALTHCHECKS_URL}
+      - DIUN_WATCH_HEALTHCHECKS_UUID=${HEALTHCHECKS_UUID}
+    volumes:
+      - diun-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  freshrss:
+    image: linuxserver/freshrss:latest
+    container_name: freshrss
+    network_mode: "bridge"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+    ports:
+      - 8033:80
+    volumes:
+      - freshrss-data:/config
+    restart: unless-stopped
+
+  librespeed:
+    image: linuxserver/librespeed:5.2.5
+    container_name: librespeed
+    network_mode: "bridge"
+    environment:
+      - PUID=1000
+      - PGUID=1000
+      - TZ=${TZ}
+      - PASSWORD=${LS_PASS}
+    volumes:
+      - librespeed-data:/config
+    ports:
+      - 8011:80
+    restart: unless-stopped
+
+  ocrmypdf:
+    image: quay.io/cmccambridge/ocrmypdf-auto:latest
+    container_name: ocrmypdf
+    network_mode: "bridge"
+    environment:
+      - USERMAP_UID=1000
+      - USERMAP_GID=1000
+      - OCR_ACTION_ON_SUCCESS=ARCHIVE_INPUT_FILES
+    volumes:
+      - ${NFILES}/documents/5-scans/input:/input
+      - ${NFILES}/documents/4-unsorted:/output
+      - ${NFILES}/documents/5-scans/archive:/archive
+      - ocrmypdf-data:/config
+    restart: unless-stopped
+
+  shaarli:
+    image: shaarli/shaarli:latest
+    container_name: shaarli
+    ports:
+      - 8022:80
+    volumes:
+      - shaarli-cache:/var/www/shaarli/cache
+      - shaarli-data:/var/www/shaarli/data
+    restart: unless-stopped
+
+  kanboard:
+    image: kanboard/kanboard:latest
+    container_name: kanboard
+    network_mode: "bridge"
+    ports:
+      - 8055:80
+    volumes:
+      - kanboard-data:/var/www/app/data
+      - kanboard-plugins:/var/www/app/plugins
+    restart: unless-stopped
+
+  microbin:
+    image: danielszabo99/microbin:latest
+    container_name: microbin
+    environment:
+      - MICROBIN_EDITABLE=true
+      - MICROBIN_DEFAULT_EXPIRY="never"
+      - MICROBIN_HIGHLIGHTSYNTAX=true
+      - MICROBIN_PUBLIC_PATH=${MB_PUBLIC_PATH}
+    ports:
+      - 8044:8080
+    volumes:
+      - microbin-data:/app/pasta_data
+    restart: unless-stopped
+
+volumes:
+  diun-data:
+    name: diun-data
+  freshrss-data:
+    name: freshrss-data
+  librespeed-data:
+    name: librespeed-data
+  ocrmypdf-data:
+    name: ocrmypdf-data
+  shaarli-cache:
+    name: shaarli-cache
+  shaarli-data:
+    name: shaarli-data
+  kanboard-data:
+    name: kanboard-data
+  kanboard-plugins:
+    name: kanboard-plugins
+  microbin-data:
+    name: microbin-data
