@@ -1,0 +1,53 @@
+---
+version: "2.1"
+services:
+  proxy:
+    image: jc21/nginx-proxy-manager:2.9.19
+    container_name: proxy
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    volumes:
+      - npm-data:/data
+      - ${DOCKER_APP_DATA}/npm-letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+
+  gokapi:
+    image: f0rc3/gokapi:latest
+    container_name: gokapi
+    environment:
+      - GOKAPI_LENGTH_ID=8
+      - GOKAPI_MAX_FILESIZE=8192
+    ports:
+      - 53842:53842
+    volumes:
+      - gokapi-config:/config
+      - ${DOCKER_APP_DATA}/gokapi-data:/uploads
+    restart: unless-stopped 
+
+  whoogle:
+    image: benbusby/whoogle-search:latest
+    container_name: whoogle
+    ports:
+      - 5000:5000
+    pids_limit: 50
+    mem_limit: 256mb
+    memswap_limit: 256mb
+    # user debian-tor from tor package
+    user: whoogle
+    security_opt:
+      - no-new-privileges
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /config/:size=10M,uid=927,gid=927,mode=1700
+      - /var/lib/tor/:size=15M,uid=927,gid=927,mode=1700
+      - /run/tor/:size=1M,uid=927,gid=927,mode=1700
+    restart: unless-stopped
+
+volumes:
+  npm-data:
+    name: npm-data
+  gokapi-config:
+    name: gokapi-config

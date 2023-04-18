@@ -13,7 +13,7 @@ services:
       - jellyfin-data:/config
       - jellyfin-cache:/cache
       - ${NMEDIA}:/media
-    restart: "unless-stopped"
+    restart: unless-stopped
 
   jackett:
     image: linuxserver/jackett:latest
