@@ -2,9 +2,12 @@
 version: "2.1"
 services:
   proxy:
-    image: jc21/nginx-proxy-manager:2.9.19
+    image: jc21/nginx-proxy-manager:2.9.22
     network_mode: "bridge"
     container_name: proxy
+    environment:
+      - PUID=1000
+      - PGID=1000
     ports:
       - 80:80
       - 81:81
