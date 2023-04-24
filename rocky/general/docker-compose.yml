@@ -29,6 +29,13 @@ services:
   whoogle:
     image: benbusby/whoogle-search:latest
     container_name: whoogle
+    environment:
+      - WHOOGLE_DOTENV=1
+      - WHOOGLE_CONFIG_DISABLE=1
+      - WHOOGLE_CONFIG_COUNTRY="United States"
+      - WHOOGLE_CONFIG_LANGUAGE="English"
+      - WHOOGLE_CONFIG_SEARCH_LANGUAGE="English"
+      - WHOOGLE_CONFIG_NEW_TAB=1
     ports:
       - 5000:5000
     pids_limit: 50
