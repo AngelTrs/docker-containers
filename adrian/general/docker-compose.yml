@@ -62,7 +62,7 @@ services:
       - DOCKER_MODS=linuxserver/mods:swag-maxmind
       - MAXMINDDB_LICENSE_KEY=${MAXMIND_KEY}
     volumes:
-      - /srv/swag:/config
+      - /srv/docker-containers/swag:/config
     ports:
       - 443:443
       - 80:80
