@@ -66,6 +66,16 @@ services:
       - portainer-data:/data
     restart: unless-stopped
 
+  mailrise:
+    image: yoryan/mailrise:stable
+    container_name: mailrise
+    ports:
+      - 8025:8025
+    volumes:
+      - ${DOCKER_APP_DATA}/mailrise/mailrise.conf:/etc/mailrise.conf:ro
+    command: -vv /etc/mailrise.conf
+    restart: unless-stopped
+
 volumes:
   npm-data:
     name: npm-data
