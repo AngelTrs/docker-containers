@@ -39,6 +39,15 @@ services:
       - freshrss-data:/config
     restart: unless-stopped
 
+  fulltextrss:
+    image: heussd/fivefilters-full-text-rss:latest
+    container_name: fulltextrss
+    ports:
+      - 8034:80
+    volumes:
+      - fulltextrss-cache:/var/www/html/cache
+    restart: unless-stopped
+
   librespeed:
     image: linuxserver/librespeed:5.2.5
     container_name: librespeed
@@ -109,6 +118,8 @@ volumes:
     name: diun-data
   freshrss-data:
     name: freshrss-data
+  fulltextrss-cache:
+    name: fulltextrss-cache
   librespeed-data:
     name: librespeed-data
   ocrmypdf-data:
