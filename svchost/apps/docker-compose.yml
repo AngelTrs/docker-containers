@@ -79,7 +79,7 @@ services:
     restart: unless-stopped
 
   shaarli:
-    image: shaarli/shaarli:latest
+    image: ghcr.io/shaarli/shaarli:latest
     container_name: shaarli
     ports:
       - 8022:80

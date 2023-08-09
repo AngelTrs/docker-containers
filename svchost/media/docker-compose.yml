@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
 
   jackett:
-    image: linuxserver/jackett:latest
+    image: linuxserver/jackett:v0.21.188-ls109
     container_name: jackett
     environment:
       - PUID=1000
@@ -32,7 +32,7 @@ services:
     restart: unless-stopped
 
   radarr:
-    image: linuxserver/radarr:latest
+    image: linuxserver/radarr:4.5.2.7388-ls174
     container_name: radarr
     environment:
       - PUID=1000
@@ -87,7 +87,7 @@ services:
     restart: unless-stopped
 
   calibre:
-    image: linuxserver/calibre:latest
+    image: linuxserver/calibre:v6.20.0-ls223
     container_name: calibre
     # security_opt:
       # - seccomp:unconfined #optional
@@ -107,7 +107,7 @@ services:
     restart: unless-stopped
 
   calibre-web:
-    image: linuxserver/calibre-web:latest
+    image: linuxserver/calibre-web:0.6.20-ls214
     container_name: calibre-web
     environment:
       - PUID=1000
