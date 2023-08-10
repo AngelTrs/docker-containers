@@ -113,6 +113,34 @@ services:
       - microbin-data:/app/pasta_data
     restart: unless-stopped
 
+  vikunja-api:
+    image: vikunja/api
+    container_name: vikunja-api
+    network_mode: "bridge"
+    environment:
+      - VIKUNJA_DATABASE_HOST=svc.home.arpa:3306
+      - VIKUNJA_DATABASE_TYPE=mysql
+      - VIKUNJA_DATABASE_DATABASE=vikunja11
+      - VIKUNJA_DATABASE_USER=${VIK_DB_USER}
+      - VIKUNJA_DATABASE_PASSWORD=${VIK_DB_PASS}
+      - VIKUNJA_SERVICE_JWTSECRET=${VIK_JWT}
+      - VIKUNJA_SERVICE_FRONTENDURL=${VIK_URL}
+    ports:
+      - 3456:3456
+    volumes:
+      - vikunja-data:/app/vikunja/files
+    restart: unless-stopped
+
+  vikunja-frontend:
+    image: vikunja/frontend
+    container_name: vikunja-frontend
+    network_mode: "bridge"
+    environment:
+      - VIKUNJA_API_URL=${VIK_API_URL}
+    ports:
+      - 8056:80
+    restart: unless-stopped
+
 volumes:
   diun-data:
     name: diun-data
@@ -134,3 +162,5 @@ volumes:
     name: kanboard-plugins
   microbin-data:
     name: microbin-data
+  vikunja-data:
+    name: vikunja-data
