@@ -72,9 +72,9 @@ services:
       - USERMAP_GID=1000
       - OCR_ACTION_ON_SUCCESS=ARCHIVE_INPUT_FILES
     volumes:
-      - ${NFILES}/documents/5-scans/input:/input
+      - ${NFILES}/documents/4-unsorted/scans/input:/input
       - ${NFILES}/documents/4-unsorted:/output
-      - ${NFILES}/documents/5-scans/archive:/archive
+      - ${NFILES}/documents/4-unsorted/scans/archive:/archive
       - ocrmypdf-data:/config
     restart: unless-stopped
 
