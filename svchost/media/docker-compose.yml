@@ -26,43 +26,33 @@ services:
       - 9117:9117
     volumes:
       - jackett-data:/config
-      - ${NMEDIA}/downloads/seedbox:/downloads
+      - ${NDOWNLOADS}/seedbox:/downloads
     labels:
       - "diun.enable=false"
-    restart: unless-stopped
-
-  radarr:
-    image: linuxserver/radarr:4.5.2.7388-ls174
-    container_name: radarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
-    ports:
-      - 7878:7878
-    volumes:
-      - radarr-data:/config
-      - ${NMEDIA}/movies:/movies
-      - ${NMEDIA}/downloads/seedbox/radarr:/downloads
     restart: unless-stopped
 
   handbrake:
     image: jlesage/handbrake:latest
     container_name: handbrake
     environment:
-      - AUTOMATED_CONVERSION_PRESET=General/Very Fast 720p30
+      - AUTOMATED_CONVERSION_PRESET=General/Very Fast 1080p30
       - AUTOMATED_CONVERSION_FORMAT=mp4
       - AUTOMATED_CONVERSION_OUTPUT_SUBDIR=SAME_AS_SRC
-      - AUTOMATED_CONVERSION_PRESET_2=General/Very Fast 480p30
+      - AUTOMATED_CONVERSION_PRESET_2=General/Very Fast 720p30
       - AUTOMATED_CONVERSION_FORMAT_2=mp4
       - AUTOMATED_CONVERSION_OUTPUT_SUBDIR_2=SAME_AS_SRC
+      - AUTOMATED_CONVERSION_PRESET_3=General/Very Fast 480p30
+      - AUTOMATED_CONVERSION_FORMAT_3=mp4
+      - AUTOMATED_CONVERSION_OUTPUT_SUBDIR_3=SAME_AS_SRC
     ports:
       - 5800:5800
     volumes:
       - handbrake-data:/config
-      - /data:/storage:ro
-      - ${NHANDBRAKE}/watch720:/watch
-      - ${NHANDBRAKE}/watch480:/watch2
+      - ${NMEDIA}:/storage/zfs:ro
+      - ${NX}:/storage/blue:ro
+      - ${NHANDBRAKE}/watch1080:/watch
+      - ${NHANDBRAKE}/watch720:/watch2
+      - ${NHANDBRAKE}/watch480:/watch3
       - ${NHANDBRAKE}/output:/output
     restart: unless-stopped
 
@@ -83,7 +73,7 @@ services:
       - 6881:6881/udp
     volumes:
       - rutorrent-data:/data
-      - ${NMEDIA}/downloads/rutorrent:/downloads
+      - ${NDOWNLOADS}/rutorrent:/downloads
     restart: unless-stopped
 
   calibre:
@@ -103,7 +93,7 @@ services:
     volumes:
       - calibre-data:/config
       - ${NMEDIA}/books:/books
-      - ${NMEDIA}/downloads/rutorrent/complete:/downloads
+      - ${NDOWNLOADS}/rutorrent/complete:/downloads
     restart: unless-stopped
 
   calibre-web:
