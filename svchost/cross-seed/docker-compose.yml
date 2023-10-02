@@ -1,0 +1,11 @@
+---
+services:
+  cross-seed:
+    image: crossseed/cross-seed
+    container_name: cross-seed
+    user: 1000:1000
+    volumes:
+      - ${DOCKER_APP_DATA}/cross-seed:/config
+      - ${NDOWNLOADS}/cross-seed/input:/torrents:ro
+      - ${NDOWNLOADS}/cross-seed/output:/cross-seeds
+    command: search
