@@ -30,28 +30,13 @@ services:
       - ${DOCKER_APP_DATA}/homer:/www/assets
     restart: unless-stopped 
 
-  mariadb:
-    image: lscr.io/linuxserver/mariadb:10.5.17
-    container_name: mariadb
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
-      - MYSQL_ROOT_PASSWORD=${DB_PASS}
-    ports:
-      - 3306:3306
-    volumes:
-      - mariadb-data:/config
-    restart: unless-stopped
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
     environment:
-      - PMA_HOST=mariadb
+      - PMA_HOST=${DB_HOST}
     ports:
-      - 8008:80
-    depends_on:
-      - mariadb
+      - 8009:80
     restart: unless-stopped
 
   portainer:
