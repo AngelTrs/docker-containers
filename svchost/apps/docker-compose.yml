@@ -88,17 +88,6 @@ services:
       - shaarli-data:/var/www/shaarli/data
     restart: unless-stopped
 
-  kanboard:
-    image: kanboard/kanboard:latest
-    container_name: kanboard
-    network_mode: "bridge"
-    ports:
-      - 8055:80
-    volumes:
-      - kanboard-data:/var/www/app/data
-      - kanboard-plugins:/var/www/app/plugins
-    restart: unless-stopped
-
   microbin:
     image: danielszabo99/microbin:latest
     container_name: microbin
@@ -118,16 +107,16 @@ services:
     container_name: vikunja-api
     network_mode: "bridge"
     environment:
-      - VIKUNJA_DATABASE_HOST=svc.home.arpa:3306
+      - VIKUNJA_DATABASE_HOST=${DB_HOST}
       - VIKUNJA_DATABASE_TYPE=mysql
-      - VIKUNJA_DATABASE_DATABASE=vikunja11
-      - VIKUNJA_DATABASE_USER=${VIK_DB_USER}
-      - VIKUNJA_DATABASE_PASSWORD=${VIK_DB_PASS}
+      - VIKUNJA_DATABASE_DATABASE=vikunja
+      - VIKUNJA_DATABASE_USER=${DB_USER}
+      - VIKUNJA_DATABASE_PASSWORD=${DB_PASS}
       - VIKUNJA_SERVICE_JWTSECRET=${VIK_JWT}
       - VIKUNJA_SERVICE_FRONTENDURL=${VIK_URL}
       - VIKUNJA_MAILER_ENABLE=1
-      - VIKUNJA_MAILER_HOST=192.168.1.150
-      - VIKUNJA_MAILER_PORT=8025
+      - VIKUNJA_MAILER_HOST=${MAILER_HOST}
+      - VIKUNJA_MAILER_PORT=${MAILER_PORT}
       - VIKUNJA_MAILER_SKIPTLSVERIFY=true
     ports:
       - 3456:3456
@@ -160,10 +149,6 @@ volumes:
     name: shaarli-cache
   shaarli-data:
     name: shaarli-data
-  kanboard-data:
-    name: kanboard-data
-  kanboard-plugins:
-    name: kanboard-plugins
   microbin-data:
     name: microbin-data
   vikunja-data:
