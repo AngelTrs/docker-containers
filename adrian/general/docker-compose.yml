@@ -2,14 +2,14 @@
 version: '3.4'
 services:
   uptime-kuma:
-    image: louislam/uptime-kuma:1.16.1
+    image: louislam/uptime-kuma:1.19.5
     container_name: uptime-kuma
     volumes:
       - uptime-kuma:/app/data
     restart: always
 
   gotify:
-    image: gotify/server-arm64:2.1.4
+    image: gotify/server-arm64:2.3.0
     container_name: gotify
     environment:
       - TZ=${TZ}
