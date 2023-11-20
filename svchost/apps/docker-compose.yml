@@ -134,6 +134,20 @@ services:
       - 8056:80
     restart: unless-stopped
 
+  changedetection:
+    image: ghcr.io/dgtlmoon/changedetection.io
+    container_name: changedetection
+    hostname: changedetection
+    volumes:
+      - changedetection-data:/datastore
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 5001:5000
+    restart: unless-stopped
+
+
 volumes:
   diun-data:
     name: diun-data
@@ -153,3 +167,5 @@ volumes:
     name: microbin-data
   vikunja-data:
     name: vikunja-data
+  changedetection-data:
+    name: changedetection-data
