@@ -57,7 +57,7 @@ services:
     restart: unless-stopped
 
   rutorrent:
-    image: crazymax/rtorrent-rutorrent:latest
+    image: crazymax/rtorrent-rutorrent:4.2.5-0.9.8-0.13.8
     container_name: rutorrent
     environment:
       - PUID=1000
