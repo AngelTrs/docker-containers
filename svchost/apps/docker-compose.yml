@@ -49,7 +49,7 @@ services:
     restart: unless-stopped
 
   librespeed:
-    image: linuxserver/librespeed:5.2.5
+    image: linuxserver/librespeed:5.2.5-ls167
     container_name: librespeed
     network_mode: "bridge"
     environment:
@@ -86,20 +86,6 @@ services:
     volumes:
       - shaarli-cache:/var/www/shaarli/cache
       - shaarli-data:/var/www/shaarli/data
-    restart: unless-stopped
-
-  microbin:
-    image: danielszabo99/microbin:latest
-    container_name: microbin
-    environment:
-      - MICROBIN_EDITABLE=true
-      - MICROBIN_DEFAULT_EXPIRY="never"
-      - MICROBIN_HIGHLIGHTSYNTAX=true
-      - MICROBIN_PUBLIC_PATH=${MB_PUBLIC_PATH}
-    ports:
-      - 8044:8080
-    volumes:
-      - microbin-data:/app/pasta_data
     restart: unless-stopped
 
   vikunja-api:
@@ -163,8 +149,6 @@ volumes:
     name: shaarli-cache
   shaarli-data:
     name: shaarli-data
-  microbin-data:
-    name: microbin-data
   vikunja-data:
     name: vikunja-data
   changedetection-data:
