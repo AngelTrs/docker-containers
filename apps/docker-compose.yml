@@ -88,9 +88,9 @@ services:
       - shaarli-data:/var/www/shaarli/data
     restart: unless-stopped
 
-  vikunja-api:
-    image: vikunja/api
-    container_name: vikunja-api
+  vikunja:
+    image: vikunja/vikunja
+    container_name: vikunja
     network_mode: "bridge"
     environment:
       - VIKUNJA_DATABASE_HOST=${DB_HOST}
@@ -99,7 +99,7 @@ services:
       - VIKUNJA_DATABASE_USER=${DB_USER}
       - VIKUNJA_DATABASE_PASSWORD=${DB_PASS}
       - VIKUNJA_SERVICE_JWTSECRET=${VIK_JWT}
-      - VIKUNJA_SERVICE_FRONTENDURL=${VIK_URL}
+      - VIKUNJA_SERVICE_PUBLICURL=${VIK_URL}
       - VIKUNJA_MAILER_ENABLE=1
       - VIKUNJA_MAILER_HOST=${MAILER_HOST}
       - VIKUNJA_MAILER_PORT=${MAILER_PORT}
@@ -108,16 +108,6 @@ services:
       - 3456:3456
     volumes:
       - vikunja-data:/app/vikunja/files
-    restart: unless-stopped
-
-  vikunja-frontend:
-    image: vikunja/frontend
-    container_name: vikunja-frontend
-    network_mode: "bridge"
-    environment:
-      - VIKUNJA_API_URL=${VIK_API_URL}
-    ports:
-      - 8056:80
     restart: unless-stopped
 
   changedetection:
