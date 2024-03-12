@@ -18,8 +18,6 @@ services:
       - DIUN_NOTIF_GOTIFY_ENDPOINT=${GOTIFY_ENDPOINT}
       - DIUN_NOTIF_GOTIFY_TOKEN=${GOTIFY_TOKEN}
       - DIUN_WATCH_FIRSTCHECKNOTIF=true
-      - DIUN_WATCH_HEALTHCHECKS_BASEURL=${HEALTHCHECKS_URL}
-      - DIUN_WATCH_HEALTHCHECKS_UUID=${HEALTHCHECKS_UUID}
     volumes:
       - diun-data:/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -72,9 +70,9 @@ services:
       - USERMAP_GID=1000
       - OCR_ACTION_ON_SUCCESS=ARCHIVE_INPUT_FILES
     volumes:
-      - ${NFILES}/documents/4-unsorted/scans/input:/input
-      - ${NFILES}/documents/4-unsorted:/output
-      - ${NFILES}/documents/4-unsorted/scans/archive:/archive
+      - ${NDOCS}/4-unsorted/scans/input:/input
+      - ${NDOCS}/4-unsorted:/output
+      - ${NDOCS}/4-unsorted/scans/archive:/archive
       - ocrmypdf-data:/config
     restart: unless-stopped
 
