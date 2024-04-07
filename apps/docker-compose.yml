@@ -121,6 +121,21 @@ services:
       - 5001:5000
     restart: unless-stopped
 
+  microbin:
+    image: danielszabo99/microbin:latest
+    container_name: microbin
+    environment:
+      - MICROBIN_EDITABLE=true
+      - MICROBIN_DEFAULT_EXPIRY=never
+      - MICROBIN_HIGHLIGHTSYNTAX=true
+      - MICROBIN_PUBLIC_PATH=${MB_PUBLIC_PATH}
+      - MICROBIN_PRIVATE=true
+    ports:
+      - 8044:8080
+    volumes:
+      - microbin-data:/app/pasta_data
+    restart: unless-stopped
+
 
 volumes:
   diun-data:
@@ -141,3 +156,5 @@ volumes:
     name: vikunja-data
   changedetection-data:
     name: changedetection-data
+  microbin-data:
+    name: microbin-data
