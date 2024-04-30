@@ -136,6 +136,19 @@ services:
       - microbin-data:/app/pasta_data
     restart: unless-stopped
 
+  thelounge:
+    image: lscr.io/linuxserver/thelounge:latest
+    container_name: thelounge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_APP_DATA}/thelounge:/config
+    ports:
+      - 9000:9000
+    restart: unless-stopped
+
 
 volumes:
   diun-data:
