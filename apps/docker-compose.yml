@@ -68,11 +68,10 @@ services:
     environment:
       - USERMAP_UID=1000
       - USERMAP_GID=1000
-      - OCR_ACTION_ON_SUCCESS=ARCHIVE_INPUT_FILES
+      - OCR_USE_POLLING_SCHEDULER=1
     volumes:
-      - ${NDOCS}/4-unsorted/scans/input:/input
-      - ${NDOCS}/4-unsorted:/output
-      - ${NDOCS}/4-unsorted/scans/archive:/archive
+      - ${NDOCS}/4-unsorted/scans/ocr-input:/input
+      - ${NDOCS}/4-unsorted/scans/ocr-output:/output
       - ocrmypdf-data:/config
     restart: unless-stopped
 
