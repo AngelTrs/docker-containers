@@ -147,6 +147,37 @@ services:
       - ${NMEDIA}/books:/books
     restart: unless-stopped
 
+  nextpvr:
+    image: nextpvr/nextpvr_amd64:stable
+    container_name: nextpvr
+    network_mode: 'service:gluetun'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+    volumes:
+      - nextpvr-config:/config
+      - ${NMEDIA}/nextpvr/recordings:/recordings
+      - ${NMEDIA}/nextpvr/buffer:/buffer
+    depends_on:
+      - gluetun
+    restart: unless-stopped
+
+  gluetun:
+    image: qmcgaw/gluetun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8866:8866
+    environment:
+      - VPN_SERVICE_PROVIDER=windscribe
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=[REDACTED]=
+      - WIREGUARD_ADDRESSES=[REDACTED]
+      - WIREGUARD_PRESHARED_KEY=[REDACTED]=
+      - VPN_ENDPOINT_PORT=443
+    restart: unless-stopped
+
 volumes:
   diun-data:
     name: diun-data
@@ -166,3 +197,5 @@ volumes:
     name: calibre-data
   calibre-web-data:
     name: calibre-web-data
+  nextpvr-config:
+    name: nextpvr-config
