@@ -27,13 +27,16 @@ services:
     image: jellyfin/jellyfin:latest
     network_mode: "bridge"
     container_name: jellyfin
-    user: 1000:1000
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
     ports:
       - 8096:8096
       - 8920:8920
     volumes:
-      - jellyfin-data:/config
-      - jellyfin-cache:/cache
+      - ${DOCKER_APP_DATA}/jellyfin/config:/config
+      - ${DOCKER_APP_DATA}/jellyfin/cache:/cache
       - ${NMEDIA}:/media
     restart: unless-stopped
 
@@ -157,8 +160,8 @@ services:
       - TZ=${TZ}
     volumes:
       - nextpvr-config:/config
-      - ${NMEDIA}/nextpvr/recordings:/recordings
-      - ${NMEDIA}/nextpvr/buffer:/buffer
+      - ${NMEDIA}/tv/recordings:/recordings
+      - ${NMEDIA}/tv/.nextpvr/buffer:/buffer
     depends_on:
       - gluetun
     restart: unless-stopped
@@ -181,14 +184,8 @@ services:
 volumes:
   diun-data:
     name: diun-data
-  jellyfin-data:
-    name: jellyfin-data
-  jellyfin-cache:
-    name: jellyfin-cache
   jackett-data:
     name: jackett-data
-  radarr-data:
-    name: radarr-data
   handbrake-data:
     name: handbrake-data
   rutorrent-data:
