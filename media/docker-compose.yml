@@ -181,6 +181,17 @@ services:
       - VPN_ENDPOINT_PORT=443
     restart: unless-stopped
 
+  vlc-bridge-fubo:
+    image: ghcr.io/maus-me/vlc-bridge-fubo:master
+    container_name: vlc-bridge-fubo
+    ports:
+      - 7777:7777
+    environment:
+      - FUBO_USER=${FUBO_USER}
+      - FUBO_PASS=${FUBO_PASS}
+      - HOST=192.168.1.154
+      - PORT=7777
+        
 volumes:
   diun-data:
     name: diun-data
