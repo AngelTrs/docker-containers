@@ -1,0 +1,76 @@
+---
+version: "2.1"
+services:
+  diun:
+    image: crazymax/diun:latest
+    container_name: diun
+    hostname: diun-media-mom
+    network_mode: "bridge"
+    command: serve
+    environment:
+      - TZ=${TZ}
+      - LOG_LEVEL=info
+      - LOG_JSON=false
+      - DIUN_WATCH_WORKERS=20
+      - DIUN_WATCH_SCHEDULE=0 23 * * *
+      - DIUN_PROVIDERS_DOCKER=true
+      - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
+      - DIUN_PROVIDERS_DOCKER_WATCHSTOPPED=true
+      - DIUN_NOTIF_GOTIFY_ENDPOINT=${GOTIFY_ENDPOINT}
+      - DIUN_NOTIF_GOTIFY_TOKEN=${GOTIFY_TOKEN}
+      - DIUN_WATCH_FIRSTCHECKNOTIF=true
+    volumes:
+      - diun-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  gluetun:
+    image: qmcgaw/gluetun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8866:8866
+      - 8888:8888/tcp
+      - 34400:34400
+    environment:
+      - VPN_SERVICE_PROVIDER=windscribe
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WG_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${WG_ADDRESSES}
+      - WIREGUARD_PRESHARED_KEY=${WG_PRESHARED_KEY}
+      - VPN_ENDPOINT_PORT=443
+      - HTTPPROXY=on
+      - HTTPPROXY_LOG=on
+    restart: unless-stopped
+
+  threadfin:
+    image: fyb3roptik/threadfin
+    container_name: threadfin
+    network_mode: 'service:gluetun'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_APP_DATA}/threadfin/conf:/home/threadfin/conf
+      - ${DOCKER_APP_DATA}/threadfin/temp:/tmp/threadfin:rw
+    depends_on:
+      - gluetun
+    restart: unless-stopped
+
+  vlc-bridge-fubo:
+    image: ghcr.io/maus-me/vlc-bridge-fubo:master
+    container_name: vlc-bridge-fubo
+    ports:
+      - 7777:7777
+    environment:
+      - FUBO_USER=${FUBO_USER}
+      - FUBO_PASS=${FUBO_PASS}
+      - HOST=192.168.1.154
+      - PORT=7777
+
+volumes:
+  diun-data:
+    name: diun-data
+  nextpvr-config:
+    name: nextpvr-config
