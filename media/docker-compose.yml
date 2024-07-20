@@ -4,6 +4,7 @@ services:
   diun:
     image: crazymax/diun:latest
     container_name: diun
+    hostname: diun-media
     network_mode: "bridge"
     command: serve
     environment:
@@ -150,48 +151,6 @@ services:
       - ${NMEDIA}/books:/books
     restart: unless-stopped
 
-  nextpvr:
-    image: nextpvr/nextpvr_amd64:stable
-    container_name: nextpvr
-    network_mode: 'service:gluetun'
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
-    volumes:
-      - nextpvr-config:/config
-      - ${NMEDIA}/tv/recordings:/recordings
-      - ${NMEDIA}/tv/.nextpvr/buffer:/buffer
-    depends_on:
-      - gluetun
-    restart: unless-stopped
-
-  gluetun:
-    image: qmcgaw/gluetun
-    cap_add:
-      - NET_ADMIN
-    ports:
-      - 8866:8866
-    environment:
-      - VPN_SERVICE_PROVIDER=windscribe
-      - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=[REDACTED]=
-      - WIREGUARD_ADDRESSES=[REDACTED]
-      - WIREGUARD_PRESHARED_KEY=[REDACTED]=
-      - VPN_ENDPOINT_PORT=443
-    restart: unless-stopped
-
-  vlc-bridge-fubo:
-    image: ghcr.io/maus-me/vlc-bridge-fubo:master
-    container_name: vlc-bridge-fubo
-    ports:
-      - 7777:7777
-    environment:
-      - FUBO_USER=${FUBO_USER}
-      - FUBO_PASS=${FUBO_PASS}
-      - HOST=192.168.1.154
-      - PORT=7777
-        
 volumes:
   diun-data:
     name: diun-data
@@ -205,5 +164,3 @@ volumes:
     name: calibre-data
   calibre-web-data:
     name: calibre-web-data
-  nextpvr-config:
-    name: nextpvr-config
