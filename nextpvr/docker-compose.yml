@@ -27,14 +27,19 @@ services:
   nextpvr:
     image: nextpvr/nextpvr_amd64:stable
     container_name: nextpvr
+    user: 1000:1000
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=${TZ}
     volumes:
       - nextpvr-config:/config
-      - ${NMEDIA}/tv/recordings:/recordings
-      - ${NMEDIA}/tv/.nextpvr/buffer:/buffer
+      - ${NMEDIA}/tv/nextpvr/recordings:/recordings
+      - ${NMEDIA}/tv/nextpvr/buffer:/buffer
     ports:
       - 8866:8866
     restart: unless-stopped
