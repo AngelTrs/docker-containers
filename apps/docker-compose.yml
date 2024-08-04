@@ -4,6 +4,7 @@ services:
   diun:
     image: crazymax/diun:latest
     container_name: diun
+    hostname: diun-apps
     network_mode: "bridge"
     command: serve
     environment:
@@ -85,28 +86,6 @@ services:
       - shaarli-data:/var/www/shaarli/data
     restart: unless-stopped
 
-  vikunja:
-    image: vikunja/vikunja
-    container_name: vikunja
-    network_mode: "bridge"
-    environment:
-      - VIKUNJA_DATABASE_HOST=${DB_HOST}
-      - VIKUNJA_DATABASE_TYPE=mysql
-      - VIKUNJA_DATABASE_DATABASE=vikunja
-      - VIKUNJA_DATABASE_USER=${DB_USER}
-      - VIKUNJA_DATABASE_PASSWORD=${DB_PASS}
-      - VIKUNJA_SERVICE_JWTSECRET=${VIK_JWT}
-      - VIKUNJA_SERVICE_PUBLICURL=${VIK_URL}
-      - VIKUNJA_MAILER_ENABLE=1
-      - VIKUNJA_MAILER_HOST=${MAILER_HOST}
-      - VIKUNJA_MAILER_PORT=${MAILER_PORT}
-      - VIKUNJA_MAILER_SKIPTLSVERIFY=true
-    ports:
-      - 3456:3456
-    volumes:
-      - vikunja-data:/app/vikunja/files
-    restart: unless-stopped
-
   changedetection:
     image: ghcr.io/dgtlmoon/changedetection.io
     container_name: changedetection
@@ -164,8 +143,6 @@ volumes:
     name: shaarli-cache
   shaarli-data:
     name: shaarli-data
-  vikunja-data:
-    name: vikunja-data
   changedetection-data:
     name: changedetection-data
   microbin-data:

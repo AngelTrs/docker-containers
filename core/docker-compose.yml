@@ -1,6 +1,31 @@
 ---
 version: "2.1"
 services:
+  diun:
+    image: crazymax/diun:latest
+    container_name: diun
+    hostname: diun-svchost
+    network_mode: "bridge"
+    command: serve
+    environment:
+      - TZ=${TZ}
+      - LOG_LEVEL=info
+      - LOG_JSON=false
+      - DIUN_WATCH_WORKERS=20
+      - DIUN_WATCH_SCHEDULE=0 23 * * *
+      - DIUN_PROVIDERS_DOCKER=true
+      - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
+      - DIUN_PROVIDERS_DOCKER_WATCHSTOPPED=true
+      - DIUN_NOTIF_GOTIFY_ENDPOINT=${GOTIFY_ENDPOINT}
+      - DIUN_NOTIF_GOTIFY_TOKEN=${GOTIFY_TOKEN}
+      - DIUN_WATCH_FIRSTCHECKNOTIF=true
+      - DIUN_WATCH_HEALTHCHECKS_BASEURL=${HEALTHCHECKS_URL}
+      - DIUN_WATCH_HEALTHCHECKS_UUID=${HEALTHCHECKS_UUID}
+    volumes:
+      - diun-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
   proxy:
     image: jc21/nginx-proxy-manager:2.9.22
     network_mode: "bridge"
@@ -51,36 +76,12 @@ services:
       - portainer-data:/data
     restart: unless-stopped
 
-  diun:
-    image: crazymax/diun:latest
-    container_name: diun
-    network_mode: "bridge"
-    command: serve
-    environment:
-      - TZ=${TZ}
-      - LOG_LEVEL=info
-      - LOG_JSON=false
-      - DIUN_WATCH_WORKERS=20
-      - DIUN_WATCH_SCHEDULE=0 23 * * *
-      - DIUN_PROVIDERS_DOCKER=true
-      - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
-      - DIUN_PROVIDERS_DOCKER_WATCHSTOPPED=true
-      - DIUN_NOTIF_GOTIFY_ENDPOINT=${GOTIFY_ENDPOINT}
-      - DIUN_NOTIF_GOTIFY_TOKEN=${GOTIFY_TOKEN}
-      - DIUN_WATCH_FIRSTCHECKNOTIF=true
-      - DIUN_WATCH_HEALTHCHECKS_BASEURL=${HEALTHCHECKS_URL}
-      - DIUN_WATCH_HEALTHCHECKS_UUID=${HEALTHCHECKS_UUID}
-    volumes:
-      - diun-data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-
 volumes:
+  diun-data:
+    name: diun-data
   npm-data:
     name: npm-data
   mariadb-data:
     name: mariadb-data
   portainer-data:
     name: portainer-data
-  diun-data:
-    name: diun-data
