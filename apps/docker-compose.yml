@@ -127,6 +127,19 @@ services:
       - 9000:9000
     restart: unless-stopped
 
+  stirling-pdf:
+    image: frooodle/s-pdf:latest
+    environment:
+      - DOCKER_ENABLE_SECURITY=false
+      - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=false
+      - LANGS=en_GB
+    volumes:
+      - ${DOCKER_APP_DATA}/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
+      - ${DOCKER_APP_DATA}/stirling-pdf/extraConfigs:/configs
+    # - ./customFiles:/customFiles/
+    # - ./logs:/logs/
+    ports:
+      - 8080:8080
 
 volumes:
   diun-data:
