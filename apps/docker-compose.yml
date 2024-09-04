@@ -129,6 +129,7 @@ services:
 
   stirling-pdf:
     image: frooodle/s-pdf:latest
+    container_name: stirling-pdf
     environment:
       - DOCKER_ENABLE_SECURITY=false
       - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=false
@@ -140,6 +141,90 @@ services:
     # - ./logs:/logs/
     ports:
       - 8080:8080
+    restart: unless-stopped
+
+  planka:
+    image: ghcr.io/plankanban/planka:latest
+    container_name: planka
+    volumes:
+      - planka_user-avatars:/app/public/user-avatars
+      - planka_project-background-images:/app/public/project-background-images
+      - planka_attachments:/app/private/attachments
+    ports:
+      - 3000:1337
+    environment:
+      - BASE_URL=https://planka.atrs.dev
+      - DATABASE_URL=postgresql://postgres@postgres/planka
+      - SECRET_KEY=${PL_SK}
+      # - TRUST_PROXY=0
+      # - TOKEN_EXPIRES_IN=365 # In days
+      # related: https://github.com/knex/knex/issues/2354
+      # As knex does not pass query parameters from the connection string we
+      # have to use environment variables in order to pass the desired values, e.g.
+      # - PGSSLMODE=<value>
+      # Configure knex to accept SSL certificates
+      # - KNEX_REJECT_UNAUTHORIZED_SSL_CERTIFICATE=false
+      - DEFAULT_ADMIN_EMAIL=${PL_ADMIN_EMAIL} # Do not remove if you want to prevent this user from being edited/deleted
+      - DEFAULT_ADMIN_PASSWORD=${PL_ADMIN_PASS}
+      - DEFAULT_ADMIN_NAME=${PL_ADMIN_NAME}
+      - DEFAULT_ADMIN_USERNAME=${PL_ADMIN_USERNAME}
+      # - SHOW_DETAILED_AUTH_ERRORS=false # Set to true to show more detailed authentication error messages. It should not be enabled without a rate limiter for security reasons.
+      # - ALLOW_ALL_TO_CREATE_PROJECTS=true
+      # - OIDC_ISSUER=
+      # - OIDC_CLIENT_ID=
+      # - OIDC_CLIENT_SECRET=
+      # - OIDC_ID_TOKEN_SIGNED_RESPONSE_ALG=
+      # - OIDC_USERINFO_SIGNED_RESPONSE_ALG=
+      # - OIDC_SCOPES=openid email profile
+      # - OIDC_RESPONSE_MODE=fragment
+      # - OIDC_USE_DEFAULT_RESPONSE_MODE=true
+      # - OIDC_ADMIN_ROLES=admin
+      # - OIDC_EMAIL_ATTRIBUTE=email
+      # - OIDC_NAME_ATTRIBUTE=name
+      # - OIDC_USERNAME_ATTRIBUTE=preferred_username
+      # - OIDC_ROLES_ATTRIBUTE=groups
+      # - OIDC_IGNORE_USERNAME=true
+      # - OIDC_IGNORE_ROLES=true
+      # - OIDC_ENFORCED=true
+      # Email Notifications (https://nodemailer.com/smtp/)
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_NAME=${SMTP_NAME}
+      # - SMTP_SECURE=true
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASS}
+      - SMTP_FROM=${SMTP_FROM}
+      # Optional fields: accessToken, events, excludedEvents
+      # - |
+      #   WEBHOOKS=[{
+      #     "url": "http://localhost:3001",
+      #     "accessToken": "notaccesstoken",
+      #     "events": ["cardCreate", "cardUpdate", "cardDelete"],
+      #     "excludedEvents": ["notificationCreate", "notificationUpdate"]
+      #   }]
+
+      # - SLACK_BOT_TOKEN=
+      # - SLACK_CHANNEL_ID=
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: postgres
+    volumes:
+      - postgres_db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=planka
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d planka"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 
 volumes:
   diun-data:
@@ -160,3 +245,7 @@ volumes:
     name: changedetection-data
   microbin-data:
     name: microbin-data
+  planka_user-avatars:
+  planka_project-background-images:
+  planka_attachments:
+  postgres_db-data:
