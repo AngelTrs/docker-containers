@@ -154,7 +154,7 @@ services:
       - 3000:1337
     environment:
       - BASE_URL=https://planka.atrs.dev
-      - DATABASE_URL=postgresql://postgres@postgres/planka
+      - DATABASE_URL=${PL_DB_URL}
       - SECRET_KEY=${PL_SK}
       # - TRUST_PROXY=0
       # - TOKEN_EXPIRES_IN=365 # In days
@@ -206,25 +206,7 @@ services:
       # - SLACK_BOT_TOKEN=
       # - SLACK_CHANNEL_ID=
     restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
 
-  postgres:
-    image: postgres:14-alpine
-    container_name: postgres
-    volumes:
-      - postgres_db-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=planka
-      - POSTGRES_HOST_AUTH_METHOD=trust
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d planka"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-  
   baikal:
     image: ckulka/baikal:nginx
     container_name: baikal
@@ -258,4 +240,3 @@ volumes:
   planka_user-avatars:
   planka_project-background-images:
   planka_attachments:
-  postgres_db-data:
