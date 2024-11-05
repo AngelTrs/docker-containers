@@ -37,9 +37,10 @@ services:
       - PGID=1000
       - TZ=${TZ}
     volumes:
-      - nextpvr-config:/config
-      - ${NMEDIA}/tv/nextpvr/recordings:/recordings
-      - ${NMEDIA}/tv/nextpvr/buffer:/buffer
+      - /home/vps_admin/nextpvr/config:/config
+      - /home/vps_admin/nextpvr/recordings:/recordings
+      - /home/vps_admin/nextpvr/buffer:/buffer
+      - /home/vps_admin/nextpvr/sync:/sync
     ports:
       - 8866:8866
     restart: unless-stopped
@@ -47,5 +48,3 @@ services:
 volumes:
   diun-data:
     name: diun-data
-  nextpvr-config:
-    name: nextpvr-config
