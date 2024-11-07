@@ -40,7 +40,6 @@ services:
       - /home/vps_admin/nextpvr/config:/config
       - /home/vps_admin/nextpvr/recordings:/recordings
       - /home/vps_admin/nextpvr/buffer:/buffer
-      - /home/vps_admin/nextpvr/sync:/sync
     ports:
       - 8866:8866
     restart: unless-stopped
