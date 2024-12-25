@@ -87,42 +87,6 @@ services:
       - ${NDOWNLOADS}/rutorrent:/downloads
     restart: unless-stopped
 
-  calibre:
-    image: lscr.io/linuxserver/calibre:latest
-    container_name: calibre
-    # security_opt:
-      # - seccomp:unconfined #optional
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
-      # - PASSWORD= #optional
-      # - CLI_ARGS= #optional
-    ports:
-      - 8084:8080
-      - 8085:8081
-    volumes:
-      - calibre-data:/config
-      - ${NMEDIA}/books:/books
-      - ${NDOWNLOADS}/rutorrent/complete:/downloads
-    restart: unless-stopped
-
-  calibre-web:
-    image: lscr.io/linuxserver/calibre-web:latest
-    container_name: calibre-web
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
-      # - DOCKER_MODS=linuxserver/mods:universal-calibre #optional
-      # - OAUTHLIB_RELAX_TOKEN_SCOPE=1 #optional
-    ports:
-      - 8083:8083
-    volumes:
-      - calibre-web-data:/config
-      - ${NMEDIA}/books:/books
-    restart: unless-stopped
-
 volumes:
   diun-data:
     name: diun-data
@@ -132,7 +96,3 @@ volumes:
     name: handbrake-data
   rutorrent-data:
     name: rutorrent-data
-  calibre-data:
-    name: calibre-data
-  calibre-web-data:
-    name: calibre-web-data

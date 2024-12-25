@@ -207,16 +207,6 @@ services:
       # - SLACK_CHANNEL_ID=
     restart: unless-stopped
 
-  baikal:
-    image: ckulka/baikal:nginx
-    container_name: baikal
-    ports:
-      - 4080:80
-    volumes:
-      - ${DOCKER_APP_DATA}/baikal/config:/var/www/baikal/config
-      - ${DOCKER_APP_DATA}/baikal/Specific:/var/www/baikal/Specific
-    restart: unless-stopped
-
   jelu:
     image: wabayang/jelu
     container_name: jelu
