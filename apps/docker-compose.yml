@@ -217,6 +217,18 @@ services:
       - ${DOCKER_APP_DATA}/baikal/Specific:/var/www/baikal/Specific
     restart: unless-stopped
 
+  jelu:
+    image: wabayang/jelu
+    container_name: jelu
+    volumes:
+      - ${DOCKER_APP_DATA}/jelu/config:/config
+      - ${DOCKER_APP_DATA}/jelu/database:/database
+      - ${DOCKER_APP_DATA}/jelu/files/images:/files/images
+      - ${DOCKER_APP_DATA}/jelu/files/imports:/files/imports
+      - /etc/timezone:/etc/timezone:ro
+    ports:
+      - 11111:11111
+    restart: unless-stopped
 
 volumes:
   diun-data:
