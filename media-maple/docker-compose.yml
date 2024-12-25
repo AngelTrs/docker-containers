@@ -1,0 +1,46 @@
+---
+services:
+  diun:
+    image: crazymax/diun:latest
+    container_name: diun
+    hostname: diun-media-maple
+    network_mode: "bridge"
+    command: serve
+    environment:
+      - TZ=${TZ}
+      - LOG_LEVEL=info
+      - LOG_JSON=false
+      - DIUN_WATCH_WORKERS=20
+      - DIUN_WATCH_SCHEDULE=0 23 * * *
+      - DIUN_PROVIDERS_DOCKER=true
+      - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
+      - DIUN_PROVIDERS_DOCKER_WATCHSTOPPED=true
+      - DIUN_NOTIF_GOTIFY_ENDPOINT=${GOTIFY_ENDPOINT}
+      - DIUN_NOTIF_GOTIFY_TOKEN=${GOTIFY_TOKEN}
+      - DIUN_WATCH_FIRSTCHECKNOTIF=true
+    volumes:
+      - diun-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:5.0.1-r0-ls364
+    container_name: "${INSTANCE_NAME}"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - WEBUI_PORT=8069
+      - TORRENTING_PORT=6881
+    volumes:
+      - ${DOCKER_APP_DATA}/${INSTANCE_NAME}:/config
+      - ${NDOWNLOADS}/${INSTANCE_NAME}:/downloads
+    ports:
+      - 8069:8069
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+
+volumes:
+  diun-data:
+    name: diun-data
