@@ -228,6 +228,18 @@ services:
       - 11111:11111
     restart: unless-stopped
 
+  bill-tracker:
+    image: zauberzeug/nicegui:2.1.0
+    container_name: bill-tracker
+    ports:
+      - 8008:8080
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ${DOCKER_APP_DATA}/bill-tracker:/app
+    restart: unless-stopped
+
 volumes:
   diun-data:
     name: diun-data
