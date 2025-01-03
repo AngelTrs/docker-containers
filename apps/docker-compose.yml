@@ -4,21 +4,27 @@ services:
   diun:
     image: crazymax/diun:latest
     container_name: diun
-    hostname: diun-apps
+    hostname: apps.home
     network_mode: "bridge"
     command: serve
     environment:
-      - TZ=${TZ}
-      - LOG_LEVEL=info
-      - LOG_JSON=false
-      - DIUN_WATCH_WORKERS=20
-      - DIUN_WATCH_SCHEDULE=0 23 * * *
-      - DIUN_PROVIDERS_DOCKER=true
-      - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
-      - DIUN_PROVIDERS_DOCKER_WATCHSTOPPED=true
-      - DIUN_NOTIF_GOTIFY_ENDPOINT=${GOTIFY_ENDPOINT}
-      - DIUN_NOTIF_GOTIFY_TOKEN=${GOTIFY_TOKEN}
-      - DIUN_WATCH_FIRSTCHECKNOTIF=true
+      TZ: ${TZ}
+      LOG_LEVEL: info
+      LOG_JSON: false
+      DIUN_WATCH_WORKERS: 20
+      DIUN_WATCH_SCHEDULE: 0 23 * * *
+      DIUN_PROVIDERS_DOCKER: true
+      DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT: true
+      DIUN_PROVIDERS_DOCKER_WATCHSTOPPED: true
+      DIUN_NOTIF_GOTIFY_ENDPOINT: ${GOTIFY_ENDPOINT}
+      DIUN_NOTIF_GOTIFY_TOKEN: ${GOTIFY_TOKEN}
+      DIUN_WATCH_FIRSTCHECKNOTIF: true
+      DIUN_NOTIF_GOTIFY_TEMPLATETITLE: >
+        {{ .Meta.Hostname }}: {{ .Entry.Image.Path }}
+          {{ if (eq .Entry.Status "new") }}(available)
+          {{ else }}(updated)
+          {{ end }}
+
     volumes:
       - diun-data:/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -135,7 +141,8 @@ services:
       - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=false
       - LANGS=en_GB
     volumes:
-      - ${DOCKER_APP_DATA}/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
+      # Required for extra OCR languages
+      - ${DOCKER_APP_DATA}/stirling-pdf/trainingData:/usr/share/tessdata
       - ${DOCKER_APP_DATA}/stirling-pdf/extraConfigs:/configs
     # - ./customFiles:/customFiles/
     # - ./logs:/logs/
@@ -164,7 +171,8 @@ services:
       # - PGSSLMODE=<value>
       # Configure knex to accept SSL certificates
       # - KNEX_REJECT_UNAUTHORIZED_SSL_CERTIFICATE=false
-      - DEFAULT_ADMIN_EMAIL=${PL_ADMIN_EMAIL} # Do not remove if you want to prevent this user from being edited/deleted
+      # Do not remove if you want to prevent this user from being edited/deleted
+      - DEFAULT_ADMIN_EMAIL=${PL_ADMIN_EMAIL}
       - DEFAULT_ADMIN_PASSWORD=${PL_ADMIN_PASS}
       - DEFAULT_ADMIN_NAME=${PL_ADMIN_NAME}
       - DEFAULT_ADMIN_USERNAME=${PL_ADMIN_USERNAME}
