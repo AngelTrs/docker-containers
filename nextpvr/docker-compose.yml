@@ -4,21 +4,26 @@ services:
   diun:
     image: crazymax/diun:latest
     container_name: diun
-    hostname: diun-nextpvr
+    hostname: penn-vps
     network_mode: "bridge"
     command: serve
     environment:
-      - TZ=${TZ}
-      - LOG_LEVEL=info
-      - LOG_JSON=false
-      - DIUN_WATCH_WORKERS=20
-      - DIUN_WATCH_SCHEDULE=0 23 * * *
-      - DIUN_PROVIDERS_DOCKER=true
-      - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
-      - DIUN_PROVIDERS_DOCKER_WATCHSTOPPED=true
-      - DIUN_NOTIF_GOTIFY_ENDPOINT=${GOTIFY_ENDPOINT}
-      - DIUN_NOTIF_GOTIFY_TOKEN=${GOTIFY_TOKEN}
-      - DIUN_WATCH_FIRSTCHECKNOTIF=true
+      TZ: ${TZ}
+      LOG_LEVEL: info
+      LOG_JSON: false
+      DIUN_WATCH_WORKERS: 20
+      DIUN_WATCH_SCHEDULE: 0 23 * * *
+      DIUN_PROVIDERS_DOCKER: true
+      DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT: true
+      DIUN_PROVIDERS_DOCKER_WATCHSTOPPED: true
+      DIUN_NOTIF_GOTIFY_ENDPOINT: ${GOTIFY_ENDPOINT}
+      DIUN_NOTIF_GOTIFY_TOKEN: ${GOTIFY_TOKEN}
+      DIUN_WATCH_FIRSTCHECKNOTIF: true
+      DIUN_NOTIF_GOTIFY_TEMPLATETITLE: >
+        {{ .Meta.Hostname }}: {{ .Entry.Image.Path }}
+          {{ if (eq .Entry.Status "new") }}(available)
+          {{ else }}(updated)
+          {{ end }}
     volumes:
       - diun-data:/data
       - /var/run/docker.sock:/var/run/docker.sock
