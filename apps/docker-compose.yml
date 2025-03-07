@@ -53,6 +53,15 @@ services:
       - fulltextrss-cache:/var/www/html/cache
     restart: unless-stopped
 
+  rss-bridge:
+    image: rssbridge/rss-bridge:latest
+    container_name: rssbridge
+    ports: 
+      - 3080:80
+    volumes:
+      - ${DOCKER_APP_DATA}/rssbridge:/config
+    restart: unless-stopped
+
   librespeed:
     image: linuxserver/librespeed:5.2.5-ls167
     container_name: librespeed
