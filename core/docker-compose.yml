@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   proxy:
-    image: jc21/nginx-proxy-manager:2.9.22
+    image: jc21/nginx-proxy-manager:2.12.2
     network_mode: "bridge"
     container_name: proxy
     environment:
