@@ -26,35 +26,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
-  proxy:
-    image: jc21/nginx-proxy-manager:2.12.2
-    network_mode: "bridge"
-    container_name: proxy
-    environment:
-      - PUID=1000
-      - PGID=1000
-    ports:
-      - 80:80
-      - 81:81
-      - 443:443
-    volumes:
-      - npm-data:/data
-      - ${DOCKER_APP_DATA}/npm-letsencrypt:/etc/letsencrypt
-    restart: unless-stopped
-
-  homer:
-    image: b4bz/homer:latest
-    network_mode: "bridge"
-    container_name: homer
-    environment:
-      - UID=1000
-      - GID=1000
-    ports:
-      - 8080:8080
-    volumes:
-      - ${DOCKER_APP_DATA}/homer:/www/assets
-    restart: unless-stopped 
-
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
@@ -79,9 +50,5 @@ services:
 volumes:
   diun-data:
     name: diun-data
-  npm-data:
-    name: npm-data
-  mariadb-data:
-    name: mariadb-data
   portainer-data:
     name: portainer-data

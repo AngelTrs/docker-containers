@@ -1,0 +1,65 @@
+---
+version: "2.1"
+services:
+  diun:
+    image: crazymax/diun:latest
+    container_name: diun
+    hostname: diun-proxy.home
+    network_mode: "bridge"
+    command: serve
+    environment:
+      TZ: ${TZ}
+      LOG_LEVEL: info
+      LOG_JSON: false
+      DIUN_WATCH_WORKERS: 20
+      DIUN_WATCH_SCHEDULE: 0 23 * * *
+      DIUN_PROVIDERS_DOCKER: true
+      DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT: true
+      DIUN_PROVIDERS_DOCKER_WATCHSTOPPED: true
+      DIUN_NOTIF_GOTIFY_ENDPOINT: ${GOTIFY_ENDPOINT}
+      DIUN_NOTIF_GOTIFY_TOKEN: ${GOTIFY_TOKEN}
+      DIUN_WATCH_FIRSTCHECKNOTIF: true
+      DIUN_NOTIF_GOTIFY_TEMPLATETITLE: >
+        {{ .Meta.Hostname }}: {{ .Entry.Image.Path }}
+          {{ if (eq .Entry.Status "new") }}(available)
+          {{ else }}(updated)
+          {{ end }}
+      DIUN_WATCH_HEALTHCHECKS_BASEURL: ${HEALTHCHECKS_URL}
+      DIUN_WATCH_HEALTHCHECKS_UUID: ${HEALTHCHECKS_UUID}
+    volumes:
+      - diun-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  npm:
+    image: jc21/nginx-proxy-manager:2.12.2
+    network_mode: "bridge"
+    container_name: proxy
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    volumes:
+      - ${DOCKER_APP_DATA}/npm:/data
+      - ${DOCKER_APP_DATA}/npm-letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+
+  homer:
+    image: b4bz/homer:latest
+    network_mode: "bridge"
+    container_name: homer
+    environment:
+      - UID=1000
+      - GID=1000
+    ports:
+      - 8080:8080
+    volumes:
+      - ${DOCKER_APP_DATA}/homer:/www/assets
+    restart: unless-stopped 
+
+volumes:
+  diun-data:
+    name: diun-data
